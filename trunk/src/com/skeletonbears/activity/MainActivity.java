@@ -41,18 +41,15 @@ public class MainActivity extends SimpleBaseGameActivity {
 	//Fields
 	//=====================	
 	
-		/* Graphics */
+		/* HashMaps */
 			HashMap<String, BitmapTextureAtlas> BTAMap;
 			HashMap<String, ITextureRegion> ITRMap;
-		
-		/* Sprites */
-			ScrollingBackground scrBackground;
-			Sprite sprBG1;
-			Sprite sprBG2;
+			HashMap<String, Sprite> SpriteMap;
 			
 		/* Misc */
 			public Camera camera;
 			public Scene scene;
+			ScrollingBackground scrBackground;
 			
 	public EngineOptions onCreateEngineOptions() 
 	{
@@ -68,8 +65,9 @@ public class MainActivity extends SimpleBaseGameActivity {
 		/*Initialize the hashmaps*/
 		BTAMap = new HashMap<String, BitmapTextureAtlas>();
 		ITRMap = new HashMap<String, ITextureRegion>();
+		SpriteMap = new HashMap<String, Sprite>();
 		
-		/*Fill up the hashmaps*/
+		/*Create the textures*/
 		addTexture("BG1", "kitties1.jpg", 0, 0, 1920, 1080);
 		addTexture("BG2", "kitties2.png", 0, 0, 1920, 1080);
 	}
@@ -80,18 +78,16 @@ public class MainActivity extends SimpleBaseGameActivity {
 		scene = new Scene();
 		scene.setTouchAreaBindingOnActionDownEnabled(true);
 		
-		sprBG1 = new Sprite(0, 0, ITRMap.get("BG1"), this.getVertexBufferObjectManager());
-		sprBG2 = new Sprite(0, 0, ITRMap.get("BG2"), this.getVertexBufferObjectManager());
+		addSprite("BG1", "BG1", 0, 0);
+		addSprite("BG2", "BG2", 0, 0);
 		
 		/* Create the background */
 		Sprite[] bgSprites = 
 			{
-				sprBG1,
-				sprBG2
+				getSprite("BG1"),
+				getSprite("BG2")
 			};
-		scrBackground = new ScrollingBackground(bgSprites, 10, scene);
-		
-		//Attach them to the scene
+		scrBackground = new ScrollingBackground(bgSprites, 10);
 		scene.attachChild(scrBackground);
 		
 		return scene;
@@ -106,13 +102,32 @@ public class MainActivity extends SimpleBaseGameActivity {
 	 * @param width
 	 * @param height
 	 */
-	public void addTexture(String key, String assetPath, int textureX, int textureY, int width, int height)
+	void addTexture(String key, String assetPath, int textureX, int textureY, int width, int height)
 	{
 		BitmapTextureAtlas BTA = new BitmapTextureAtlas(this.getTextureManager(), width, height, TextureOptions.BILINEAR);
 		ITextureRegion ITR = BitmapTextureAtlasTextureRegionFactory.createFromAsset(BTA, this, assetPath, textureX, textureY);
 		BTAMap.put(key, BTA);
 		ITRMap.put(key, ITR);
 		BTA.load();
+	}
+	
+	/**
+	 * Creates a sprite
+	 * @param key
+	 * @param textureKey
+	 * @param x
+	 * @param y
+	 */
+	void addSprite(String key, String textureKey, int x, int y)
+	{
+		Sprite sprite = new Sprite(x, y, ITRMap.get(textureKey), this.getVertexBufferObjectManager());
+		SpriteMap.put(key, sprite);
+		scene.attachChild(sprite);
+	}
+	
+	Sprite getSprite(String key)
+	{
+		return SpriteMap.get(key);
 	}
 
 }
