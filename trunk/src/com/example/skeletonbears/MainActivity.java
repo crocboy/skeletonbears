@@ -1,5 +1,7 @@
 package com.example.skeletonbears;
 
+import nu.xom.Element;
+
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -23,6 +25,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 	/**
 	 * The main Android Activity where the game begins
+	 * 
 	 */
 	
 	//=====================
