@@ -18,15 +18,13 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 public class ScrollingBackground extends Entity{
 	
 	Sprite[] sprites;
-	Scene scene;
 	public float scrollSpeed;
 	public float totalLength;
 	
-	public ScrollingBackground(Sprite[] sprites, float scrollSpeed, Scene scene)
+	public ScrollingBackground(Sprite[] sprites, float scrollSpeed)
 	{
 		this.sprites = sprites;
 		this.scrollSpeed = scrollSpeed;
-		this.scene = scene;
 		initBackgrounds();
 	}
 	
@@ -37,7 +35,6 @@ public class ScrollingBackground extends Entity{
 		{
 			sprite.setX(offset);
 			offset += sprite.getWidth();
-			this.scene.attachChild(sprite);
 		}
 		this.totalLength = offset;
 	}
