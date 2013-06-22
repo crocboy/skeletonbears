@@ -1,5 +1,7 @@
 package com.skeletonbears.activity;
 
+import java.util.HashMap;
+
 import nu.xom.Element;
 
 import org.andengine.engine.camera.Camera;
@@ -40,11 +42,8 @@ public class MainActivity extends SimpleBaseGameActivity {
 	//=====================	
 	
 		/* Graphics */
-			BitmapTextureAtlas atlBG1;
-			ITextureRegion texBG1;
-			
-			BitmapTextureAtlas atlBG2;
-			ITextureRegion texBG2;
+			HashMap<String, BitmapTextureAtlas> BTAMap;
+			HashMap<String, ITextureRegion> ITRMap;
 		
 		/* Sprites */
 			ScrollingBackground scrBackground;
@@ -66,16 +65,13 @@ public class MainActivity extends SimpleBaseGameActivity {
 	@Override
 	protected void onCreateResources() 
 	{
-		//Create Resources
-		atlBG1 = new BitmapTextureAtlas(this.getTextureManager(), 1920, 1080, TextureOptions.BILINEAR);
-		texBG1 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(atlBG1, this, "kitties1.jpg", 0, 0);
+		/*Initialize the hashmaps*/
+		BTAMap = new HashMap<String, BitmapTextureAtlas>();
+		ITRMap = new HashMap<String, ITextureRegion>();
 		
-		atlBG2 = new BitmapTextureAtlas(this.getTextureManager(), 1920, 1080, TextureOptions.BILINEAR);
-		texBG2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(atlBG2, this, "kitties2.png", 0, 0);
-		
-		//Load them up
-		atlBG1.load();
-		atlBG2.load();
+		/*Fill up the hashmaps*/
+		addTexture("BG1", "kitties1.jpg", 0, 0, 1920, 1080);
+		addTexture("BG2", "kitties2.png", 0, 0, 1920, 1080);
 	}
 
 	@Override
@@ -84,8 +80,8 @@ public class MainActivity extends SimpleBaseGameActivity {
 		scene = new Scene();
 		scene.setTouchAreaBindingOnActionDownEnabled(true);
 		
-		sprBG1 = new Sprite(0, 0, texBG1, this.getVertexBufferObjectManager());
-		sprBG2 = new Sprite(0, 0, texBG2, this.getVertexBufferObjectManager());
+		sprBG1 = new Sprite(0, 0, ITRMap.get("BG1"), this.getVertexBufferObjectManager());
+		sprBG2 = new Sprite(0, 0, ITRMap.get("BG2"), this.getVertexBufferObjectManager());
 		
 		/* Create the background */
 		Sprite[] bgSprites = 
@@ -99,6 +95,24 @@ public class MainActivity extends SimpleBaseGameActivity {
 		scene.attachChild(scrBackground);
 		
 		return scene;
+	}
+	
+	/**
+	 * Creates a texture resource
+	 * @param key
+	 * @param assetPath
+	 * @param textureX
+	 * @param textureY
+	 * @param width
+	 * @param height
+	 */
+	public void addTexture(String key, String assetPath, int textureX, int textureY, int width, int height)
+	{
+		BitmapTextureAtlas BTA = new BitmapTextureAtlas(this.getTextureManager(), width, height, TextureOptions.BILINEAR);
+		ITextureRegion ITR = BitmapTextureAtlasTextureRegionFactory.createFromAsset(BTA, this, assetPath, textureX, textureY);
+		BTAMap.put(key, BTA);
+		ITRMap.put(key, ITR);
+		BTA.load();
 	}
 
 }
