@@ -1,4 +1,4 @@
-package com.example.skeletonbears;
+package com.skeletonbears.activity;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;

@@ -1,4 +1,4 @@
-package com.example.skeletonbears;
+package com.skeletonbears.activity;
 
 import nu.xom.Element;
 
