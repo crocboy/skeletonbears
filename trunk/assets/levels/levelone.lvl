@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<level 
+	name = "Level One" 
+	background = "background.png"
+	speed = "1"	>
+	
+</level>
