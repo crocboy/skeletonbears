@@ -2,28 +2,23 @@ package com.skeletonbears.activity;
 
 import java.util.HashMap;
 
-import nu.xom.Element;
-
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.SpriteBackground;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
+import com.skeletonbears.filedata.LevelLoader;
+import com.skeletonbears.level.LevelData;
 
-public class MainActivity extends SimpleBaseGameActivity {
+public class MainActivity extends SimpleBaseGameActivity 
+{
 
 	/**
 	 * The main Android Activity where the game begins
@@ -33,23 +28,22 @@ public class MainActivity extends SimpleBaseGameActivity {
 	//=====================
 	//Constants
 	//=====================
+	public static int CAMERA_WIDTH = 1920;
+	public static int CAMERA_HEIGHT = 1080;
 	
-		public static int CAMERA_WIDTH = 1920;
-		public static int CAMERA_HEIGHT = 1080;
 	
 	//=====================
 	//Fields
 	//=====================	
-	
-		/* HashMaps */
-			HashMap<String, BitmapTextureAtlas> BTAMap;
-			HashMap<String, ITextureRegion> ITRMap;
-			HashMap<String, Sprite> SpriteMap;
+	/* HashMaps */
+	HashMap<String, BitmapTextureAtlas> BTAMap;
+	HashMap<String, ITextureRegion> ITRMap;
+	HashMap<String, Sprite> SpriteMap;
 			
-		/* Misc */
-			public Camera camera;
-			public Scene scene;
-			ScrollingBackground scrBackground;
+	/* Misc */
+	public Camera camera;
+	public Scene scene;
+	ScrollingBackground scrBackground;
 			
 	public EngineOptions onCreateEngineOptions() 
 	{
@@ -82,13 +76,11 @@ public class MainActivity extends SimpleBaseGameActivity {
 		addSprite("BG2", "BG2", 0, 0);
 		
 		/* Create the background */
-		Sprite[] bgSprites = 
-			{
-				getSprite("BG1"),
-				getSprite("BG2")
-			};
+		Sprite[] bgSprites = {getSprite("BG1"), getSprite("BG2")};
 		scrBackground = new ScrollingBackground(bgSprites, 10);
 		scene.attachChild(scrBackground);
+		
+		LevelData l = LevelLoader.ReadLevelData("levelone", this);
 		
 		return scene;
 	}

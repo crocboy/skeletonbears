@@ -1,16 +1,7 @@
 package com.skeletonbears.activity;
 
 import org.andengine.entity.Entity;
-import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.sprite.vbo.ISpriteVertexBufferObject;
-import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 /**
  * This class takes an array of sprites and laces them together as one continuously scrolling background.
