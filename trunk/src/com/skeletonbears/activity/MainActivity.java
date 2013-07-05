@@ -6,6 +6,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
+import org.andengine.entity.primitive.Line;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.TextureOptions;
@@ -13,6 +14,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.color.Color;
 
 import com.skeletonbears.filedata.LevelLoader;
 import com.skeletonbears.level.LevelData;
@@ -28,10 +30,10 @@ public class MainActivity extends SimpleBaseGameActivity
 	//=====================
 	//Constants
 	//=====================
-	public static int CAMERA_WIDTH = 1920;
-	public static int CAMERA_HEIGHT = 1080;
-	
-	
+	public static final int CAMERA_WIDTH = 1920;
+	public static final int CAMERA_HEIGHT = 1080;
+	/** The fraction of the screen that is above the horizon */
+	static final float HORIZON_POS = 2 / 5f;
 	//=====================
 	//Fields
 	//=====================	
@@ -62,8 +64,7 @@ public class MainActivity extends SimpleBaseGameActivity
 		SpriteMap = new HashMap<String, Sprite>();
 		
 		/*Create the textures*/
-		addTexture("BG1", "kitties1.jpg", 0, 0, 1920, 1080);
-		addTexture("BG2", "kitties2.png", 0, 0, 1920, 1080);
+		addTexture("BG1", "backgrounds/background.png", 0, 0, 1920, 1080);
 	}
 
 	@Override
@@ -73,12 +74,15 @@ public class MainActivity extends SimpleBaseGameActivity
 		scene.setTouchAreaBindingOnActionDownEnabled(true);
 		
 		addSprite("BG1", "BG1", 0, 0);
-		addSprite("BG2", "BG2", 0, 0);
+		addSprite("BG2", "BG1", 0, 0);
 		
 		/* Create the background */
 		Sprite[] bgSprites = {getSprite("BG1"), getSprite("BG2")};
 		scrBackground = new ScrollingBackground(bgSprites, 10);
 		scene.attachChild(scrBackground);
+		
+		/* Add the lanes */
+		addLanes();
 		
 		LevelData l = LevelLoader.ReadLevelData("levelone", this);
 		
@@ -105,7 +109,7 @@ public class MainActivity extends SimpleBaseGameActivity
 	
 	/**
 	 * Creates a sprite
-	 * @param key
+	 * @param key.
 	 * @param textureKey
 	 * @param x
 	 * @param y
@@ -117,9 +121,29 @@ public class MainActivity extends SimpleBaseGameActivity
 		scene.attachChild(sprite);
 	}
 	
+	/**
+	 * Get a sprite from the map
+	 * @param key
+	 * @return sprite
+	 */
 	Sprite getSprite(String key)
 	{
 		return SpriteMap.get(key);
+	}
+	
+	/**
+	 * Draws lanes
+	 */
+	void addLanes()
+	{
+		float increment = (CAMERA_HEIGHT * (1 - HORIZON_POS)) / 5;
+		for(int i = 0; i < 5; i++)
+		{
+			Line line = new Line(0, CAMERA_HEIGHT * HORIZON_POS + i * increment, CAMERA_WIDTH, CAMERA_HEIGHT * HORIZON_POS + i * increment, this.getVertexBufferObjectManager());
+			line.setColor(Color.BLACK);
+			line.setLineWidth(5);
+			scene.attachChild(line);
+		}
 	}
 
 }
