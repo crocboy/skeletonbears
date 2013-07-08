@@ -9,12 +9,16 @@ import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.util.FPSLogger;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
+
+import android.graphics.Point;
+import android.view.Display;
 
 import com.skeletonbears.filedata.LevelLoader;
 import com.skeletonbears.level.LevelData;
@@ -30,8 +34,6 @@ public class MainActivity extends SimpleBaseGameActivity
 	//=====================
 	//Constants
 	//=====================
-	public static final int CAMERA_WIDTH = 1920;
-	public static final int CAMERA_HEIGHT = 1080;
 	/** The fraction of the screen that is above the horizon */
 	static final float HORIZON_POS = 2 / 5f;
 	//=====================
@@ -41,17 +43,39 @@ public class MainActivity extends SimpleBaseGameActivity
 	HashMap<String, BitmapTextureAtlas> BTAMap;
 	HashMap<String, ITextureRegion> ITRMap;
 	HashMap<String, Sprite> SpriteMap;
-			
+	
+	/* Screen info */
+	public int screenWidth = 1920;
+	public int screenHeight = 1080;
+	public static float screenStretch;
+	
 	/* Misc */
 	public Camera camera;
 	public Scene scene;
 	ScrollingBackground scrBackground;
 			
+	@SuppressWarnings("deprecation")
 	public EngineOptions onCreateEngineOptions() 
 	{
-		camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		/* get screen size */
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		try // Newer devices
+		{
+	        display.getSize(size);
+	    }
+		catch (java.lang.NoSuchMethodError whatevsdude) // Older device
+	    { 
+	        size.x = display.getWidth();
+	        size.y = display.getHeight();
+	    }
+		screenWidth = size.x;
+		screenHeight = size.y;
+		screenStretch = screenHeight / 1080f;		
+		camera = new Camera(0, 0, screenWidth, screenHeight);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new FillResolutionPolicy(), camera);
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
+		
 		return engineOptions;
 	}
 
@@ -75,6 +99,11 @@ public class MainActivity extends SimpleBaseGameActivity
 		
 		addSprite("BG1", "BG1", 0, 0);
 		addSprite("BG2", "BG1", 0, 0);
+		/* Scale the background 7*/
+		/*getSprite("BG1").setScaleCenter(0, 0);
+		getSprite("BG2").setScaleCenter(0, 0);
+		getSprite("BG1").setScale(screenStretch);
+		getSprite("BG2").setScale(screenStretch);*/
 		
 		/* Create the background */
 		Sprite[] bgSprites = {getSprite("BG1"), getSprite("BG2")};
@@ -84,6 +113,7 @@ public class MainActivity extends SimpleBaseGameActivity
 		/* Add the lanes */
 		addLanes();
 		
+		scene.registerUpdateHandler(new FPSLogger());
 		LevelData l = LevelLoader.ReadLevelData("levelone", this);
 		
 		return scene;
@@ -136,10 +166,10 @@ public class MainActivity extends SimpleBaseGameActivity
 	 */
 	void addLanes()
 	{
-		float increment = (CAMERA_HEIGHT * (1 - HORIZON_POS)) / 5;
+		float increment = (screenHeight * (1 - HORIZON_POS)) / 5;
 		for(int i = 0; i < 5; i++)
 		{
-			Line line = new Line(0, CAMERA_HEIGHT * HORIZON_POS + i * increment, CAMERA_WIDTH, CAMERA_HEIGHT * HORIZON_POS + i * increment, this.getVertexBufferObjectManager());
+			Line line = new Line(0, screenHeight * HORIZON_POS + i * increment, screenWidth, screenHeight * HORIZON_POS + i * increment, this.getVertexBufferObjectManager());
 			line.setColor(Color.BLACK);
 			line.setLineWidth(5);
 			scene.attachChild(line);

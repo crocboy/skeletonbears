@@ -15,7 +15,7 @@ public class ScrollingBackground extends Entity{
 	public ScrollingBackground(Sprite[] sprites, float scrollSpeed)
 	{
 		this.sprites = sprites;
-		this.scrollSpeed = scrollSpeed;
+		this.scrollSpeed = scrollSpeed * MainActivity.screenStretch;
 		initBackgrounds();
 	}
 	
@@ -25,7 +25,7 @@ public class ScrollingBackground extends Entity{
 		for (Sprite sprite : this.sprites)
 		{
 			sprite.setX(offset);
-			offset += sprite.getWidth();
+			offset += getSpriteWidth(sprite);
 		}
 		this.totalLength = offset;
 	}
@@ -39,10 +39,15 @@ public class ScrollingBackground extends Entity{
 		for(Sprite sprite : this.sprites)
 		{
 			sprite.setX(sprite.getX()-this.scrollSpeed);
-			if (sprite.getX() <= -sprite.getWidth())
+			if (sprite.getX() <= -getSpriteWidth(sprite))
 			{
-				sprite.setX(this.totalLength - sprite.getWidth());
+				sprite.setX(this.totalLength - getSpriteWidth(sprite));
 			}
 		}
+	}
+	
+	public float getSpriteWidth(Sprite sprite)
+	{
+		return sprite.getWidth() * sprite.getScaleX();
 	}
 }
